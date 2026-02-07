@@ -406,14 +406,20 @@
             }, 1500 + Math.random() * 1000);
         }
 
-        // Add message to chat
+        // Add message to chat with enhanced formatting
         function addMessage(message, sender) {
             const messageDiv = document.createElement('div');
             const isUser = sender === 'user';
             
-            messageDiv.className = `flex items-start space-x-3 ${isUser ? 'justify-end' : ''}`;
+            messageDiv.className = `flex items-start space-x-3 ${isUser ? 'justify-end' : ''} animate-fadeIn`;
             
             const currentTime = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            // Format message with line breaks and markdown-like styling
+            const formattedMessage = message
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-primary">$1</strong>')
+                .replace(/• (.*?)(<br>|$)/g, '<div class="ml-3 my-1">• $1</div>');
             
             messageDiv.innerHTML = `
                 ${!isUser ? `
@@ -424,14 +430,14 @@
                     </div>
                 ` : ''}
                 <div class="flex-1 ${isUser ? 'flex justify-end' : ''}">
-                    <div class="${isUser ? 'bg-primary text-white' : 'bg-gray-100'} rounded-2xl ${isUser ? 'rounded-tr-md' : 'rounded-tl-md'} p-4 max-w-md">
-                        <p class="${isUser ? 'text-white' : 'text-text-primary'}">${message}</p>
+                    <div class="${isUser ? 'bg-primary text-white' : 'bg-gray-100'} rounded-2xl ${isUser ? 'rounded-tr-md' : 'rounded-tl-md'} p-4 ${isUser ? 'max-w-md' : 'max-w-2xl'} shadow-md">
+                        <div class="${isUser ? 'text-white' : 'text-text-primary'} text-sm leading-relaxed">${formattedMessage}</div>
                     </div>
                     <div class="text-xs text-text-secondary mt-1 ${isUser ? 'mr-2' : 'ml-2'}">${currentTime}</div>
                 </div>
                 ${isUser ? `
                     <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
-                        <span class="text-sm font-medium text-primary">A</span>
+                        <span class="text-sm font-medium text-primary">You</span>
                     </div>
                 ` : ''}
             `;
@@ -440,27 +446,45 @@
             scrollToBottom();
         }
 
-        // Generate AI response based on user message
+        // Generate AI response based on user message with enhanced logic
         function generateAIResponse(userMessage) {
-            const responses = {
-                'college': 'Here are some excellent government colleges in J&K that might interest you. Would you like me to provide detailed information about admission requirements and programs offered?',
-                'stream': 'Choosing the right stream is crucial for your future. Based on your interests, I can help you explore different options. Would you like to take a quick assessment to get personalized recommendations?',
-                'scholarship': 'There are several scholarship opportunities available for students in J&K. Let me share some key programs that you might be eligible for.',
-                'career': 'Career planning is essential for long-term success. I can help you explore various career paths based on your chosen stream and interests.',
-                'default': 'That\'s a great question! Let me provide you with some helpful information. Would you like me to elaborate on any specific aspect?'
-            };
-
-            let response = responses.default;
             const lowerMessage = userMessage.toLowerCase();
+            let response = '';
 
-            if (lowerMessage.includes('college') || lowerMessage.includes('university')) {
-                response = responses.college;
-            } else if (lowerMessage.includes('stream') || lowerMessage.includes('science') || lowerMessage.includes('commerce')) {
-                response = responses.stream;
-            } else if (lowerMessage.includes('scholarship') || lowerMessage.includes('financial')) {
-                response = responses.scholarship;
-            } else if (lowerMessage.includes('career') || lowerMessage.includes('job')) {
-                response = responses.career;
+            // College-related queries
+            if (lowerMessage.includes('college') || lowerMessage.includes('university') || lowerMessage.includes('admission')) {
+                const colleges = [
+                    '• University of Kashmir - Srinagar (Science, Commerce, Arts)',
+                    '• NIT Srinagar - National Institute of Technology',
+                    '• Islamic University of Science and Technology (IUST)',
+                    '• Central University of Kashmir',
+                    '• Shri Mata Vaishno Devi University'
+                ];
+                response = `Here are some excellent colleges in J&K:\n${colleges.join('\n')}\n\nWould you like detailed information about any of these institutions or their admission process?`;
+            }
+            // Stream selection queries
+            else if (lowerMessage.includes('stream') || lowerMessage.includes('science') || lowerMessage.includes('commerce') || lowerMessage.includes('arts') || lowerMessage.includes('choice')) {
+                response = `Great question about stream selection! Let me help you:\n\n📚 **Science Stream**\n• Best for: Engineering, Medical, Research\n• Subjects: Physics, Chemistry, Math/Biology\n• Career Options: Doctor, Engineer, Scientist\n\n💼 **Commerce Stream**\n• Best for: Business, Finance, Economics\n• Subjects: Accountancy, Business Studies, Economics\n• Career Options: CA, CS, Banker\n\n🎨 **Arts Stream**\n• Best for: Social Sciences, Humanities\n• Subjects: History, Geography, Literature, Philosophy\n• Career Options: Lawyer, Journalist, Teacher\n\nWould you like me to help you assess which stream might be best for you?`;
+            }
+            // Scholarship queries
+            else if (lowerMessage.includes('scholarship') || lowerMessage.includes('financial') || lowerMessage.includes('aid') || lowerMessage.includes('grant')) {
+                response = `Excellent news! There are multiple scholarship opportunities available:\n\n💰 **Government Scholarships**\n• Post-Matric Scholarship for ST/SC students\n• National Means Cum Merit Scholarship (NMMSS)\n• Central Sector Scheme of Scholarship\n\n🎓 **Merit-Based Scholarships**\n• AICTE Scholarship for Excellence\n• University Grants Commission (UGC) Scholarships\n• Private Institution Scholarships\n\n📊 **Eligibility varies based on:**\n• Family income\n• Academic performance\n• Caste/Category (if applicable)\n• State residence\n\nWould you like help with the application process for any scholarship?`;
+            }
+            // Career planning queries
+            else if (lowerMessage.includes('career') || lowerMessage.includes('job') || lowerMessage.includes('future') || lowerMessage.includes('profession')) {
+                response = `Career planning is crucial for your success! Let's explore your options:\n\n🚀 **Popular Career Paths**\n\n🔬 **STEM Fields**\n• Software Engineer, Data Scientist\n• Mechanical/Civil Engineer\n• Medical Doctor, Research Scientist\n\n💼 **Business & Finance**\n• Chartered Accountant\n• Investment Banker\n• Business Entrepreneur\n\n📚 **Professional Services**\n• Lawyer, Consultant\n• Teacher, Professor\n• Civil Service Officer (IAS/IPS)\n\nWould you like me to help create a personalized career roadmap based on your interests and abilities?`;
+            }
+            // Entrance exam queries
+            else if (lowerMessage.includes('exam') || lowerMessage.includes('jee') || lowerMessage.includes('neet') || lowerMessage.includes('preparation')) {
+                response = `Great! Let me help with entrance exam preparation:\n\n📖 **Major Entrance Exams in India**\n\n🧪 **For Engineering**\n• JEE Main (for NITs, IIITs)\n• JEE Advanced (for IITs)\n• BITSAT, VITEEE\n\n⚕️ **For Medical**\n• NEET (National Eligibility cum Entrance Test)\n• Score: 50th percentile minimum\n\n📊 **Preparation Tips**\n• Start 1-2 years in advance\n• Practice previous year papers\n• Take mock tests regularly\n• Join coaching if needed\n\nWhich exam would you like to focus on? I can provide a detailed preparation plan.`;
+            }
+            // Study tips and general queries
+            else if (lowerMessage.includes('study') || lowerMessage.includes('focus') || lowerMessage.includes('tips') || lowerMessage.includes('tips')) {
+                response = `Here are effective study strategies for academic success:\n\n📋 **Time Management**\n• Create a study schedule\n• Allocate 2-3 hours daily\n• Take breaks every 45 minutes\n\n🎯 **Effective Learning**\n• Active reading and note-taking\n• Practice problems daily\n• Group study sessions\n• Teach concepts to others\n\n💪 **Exam Preparation**\n• Solve past papers\n• Create formula sheets\n• Mock tests & analysis\n• Revision strategy\n\nWould you like personalized tips based on your specific subjects or goals?`;
+            }
+            // Default response for general questions
+            else {
+                response = `That's an excellent question! I'm here to help with your educational journey in Jammu & Kashmir.\n\n💡 **I can assist you with:**\n• College and university information\n• Stream selection guidance\n• Career planning and opportunities\n• Entrance exam preparation (JEE, NEET, etc.)\n• Scholarship information\n• Study tips and strategies\n• Government colleges in J&K\n\nCould you be more specific about what you'd like to know? Feel free to ask about any aspect of your education!`;
             }
 
             addMessage(response, 'ai');
@@ -544,8 +568,39 @@
             });
         }
 
+        // Add visual feedback for button clicks
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                ripple.style.position = 'absolute';
+                ripple.style.borderRadius = '50%';
+                ripple.style.backgroundColor = 'rgba(255,255,255,0.5)';
+                ripple.style.pointerEvents = 'none';
+                ripple.style.animation = 'ripple 0.6s ease-out';
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+                ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
         // Initialize chat
         scrollToBottom();
     </script>
+
+    <!-- Ripple animation CSS -->
+    <style>
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    </style>
 </body>
 </html>

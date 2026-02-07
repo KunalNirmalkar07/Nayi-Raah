@@ -257,4 +257,115 @@
   .transition-custom-slow {
     transition: all var(--transition-normal);
   }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-slideUp {
+    animation: slideUp 0.4s ease-out;
+  }
+
+  /* Enhanced input styling */
+  .input-field {
+    border: 1.5px solid var(--color-border);
+    transition: all 0.2s ease;
+  }
+
+  .input-field:hover {
+    border-color: var(--color-primary-300);
+  }
+
+  .input-field:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+  }
+
+  /* Improved button styling with better hover effects */
+  .btn-primary, .btn-secondary {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary:before, .btn-secondary:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: translate(-50%, -50%);
+    transition: width 0.5s, height 0.5s;
+  }
+
+  .btn-primary:hover:before, .btn-secondary:hover:before {
+    width: 300px;
+    height: 300px;
+  }
+
+  /* Enhanced card styling with smooth transitions */
+  .card {
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Better message bubble styling */
+  .message-bubble {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Improved chat message spacing */
+  .chat-message {
+    line-height: 1.5;
+    letter-spacing: 0.3px;
+  }
+
+  /* Enhanced progress bar animation */
+  .progress-fill {
+    background: linear-gradient(90deg, var(--color-success), var(--color-success-600));
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+  }
+
+  /* Better label styling */
+  label {
+    transition: color 0.2s ease;
+  }
+
+  label:hover {
+    color: var(--color-primary);
+  }
+
+  /* Improved focus states for accessibility */
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
 }
